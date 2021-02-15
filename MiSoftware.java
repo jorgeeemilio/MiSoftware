@@ -25,18 +25,6 @@ public class MiSoftware implements WindowListener, ActionListener
 	// Ventana Principal
 	Frame ventana = new Frame("Mi Software");
 
-	// Ventana Alta de Cliente
-	Frame frmAltaCliente = new Frame("Alta de Cliente");
-	Label lblNombreCliente = new Label("Nombre:");
-	TextField txtNombreCliente = new TextField(20);
-	Label lblCifCliente = new Label("Cif:");
-	TextField txtCifCliente = new TextField(20);
-	Button btnAltaCliente = new Button("Alta");
-	Button btnCancelarAltaCliente = new Button("Cancelar");
-
-	Dialog dlgConfirmarAltaCliente = new Dialog(frmAltaCliente, "Alta Cliente", true);
-	Label lblMensajeAltaCliente = new Label("Alta de Cliente Correcta");
-
 	// Ventana Consulta de Clientes
 	Frame frmConsultaClientes = new Frame("Consulta Clientes");
 	TextArea listadoClientes = new TextArea(4, 30);
@@ -142,18 +130,7 @@ public class MiSoftware implements WindowListener, ActionListener
 	public void windowClosed(WindowEvent we) {}
 	public void windowClosing(WindowEvent we)
 	{
-		if(frmAltaCliente.isActive())
-		{
-			frmAltaCliente.setVisible(false);
-		}
-		else if(dlgConfirmarAltaCliente.isActive())
-		{
-			txtNombreCliente.setText("");
-			txtCifCliente.setText("");
-			txtNombreCliente.requestFocus();
-			dlgConfirmarAltaCliente.setVisible(false);
-		}
-		else if(frmConsultaClientes.isActive())
+		if(frmConsultaClientes.isActive())
 		{
 			frmConsultaClientes.setVisible(false);
 		}
@@ -188,64 +165,7 @@ public class MiSoftware implements WindowListener, ActionListener
 	{
 		if(evento.getSource().equals(mniAltaCliente))
 		{
-			frmAltaCliente.setLayout(new FlowLayout());
-			frmAltaCliente.add(lblNombreCliente);
-			txtNombreCliente.setText("");
-			frmAltaCliente.add(txtNombreCliente);
-			frmAltaCliente.add(lblCifCliente);
-			txtCifCliente.setText("");
-			frmAltaCliente.add(txtCifCliente);
-			btnAltaCliente.addActionListener(this);
-			frmAltaCliente.add(btnAltaCliente);
-			btnCancelarAltaCliente.addActionListener(this);
-			frmAltaCliente.add(btnCancelarAltaCliente);
-
-			frmAltaCliente.setSize(250,140);
-			frmAltaCliente.setResizable(false);
-			frmAltaCliente.setLocationRelativeTo(null);
-			frmAltaCliente.addWindowListener(this);
-			txtNombreCliente.requestFocus();
-			frmAltaCliente.setVisible(true);
-		}
-		else if(evento.getSource().equals(btnAltaCliente))
-		{
-			connection = bd.conectar();
-			try
-			{
-				//Crear una sentencia
-				statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-						ResultSet.CONCUR_READ_ONLY);
-				//Crear un objeto ResultSet para guardar lo obtenido
-				//y ejecutar la sentencia SQL
-				if(((txtNombreCliente.getText().length())!=0)
-						&&((txtCifCliente.getText().length())!=0))
-				{
-					sentencia = "INSERT INTO clientes VALUES (null, '"
-							+ txtNombreCliente.getText()
-							+ "', '" +txtCifCliente.getText() + "')";
-					statement.executeUpdate(sentencia);
-					lblMensajeAltaCliente.setText("Alta de Cliente Correcta");
-				}
-				else
-				{
-					lblMensajeAltaCliente.setText("Faltan datos");
-				}
-			}
-			catch (SQLException sqle)
-			{
-				lblMensajeAltaCliente.setText("Error en ALTA");
-				System.out.println(sqle.getMessage());
-			}
-			finally
-			{
-				dlgConfirmarAltaCliente.setLayout(new FlowLayout());
-				dlgConfirmarAltaCliente.addWindowListener(this);
-				dlgConfirmarAltaCliente.setSize(150,100);
-				dlgConfirmarAltaCliente.setResizable(false);
-				dlgConfirmarAltaCliente.setLocationRelativeTo(null);
-				dlgConfirmarAltaCliente.add(lblMensajeAltaCliente);
-				dlgConfirmarAltaCliente.setVisible(true);
-			}
+			new AltaCliente();
 		}
 		else if(evento.getSource().equals(mniConsultaCliente))
 		{
@@ -278,7 +198,6 @@ public class MiSoftware implements WindowListener, ActionListener
 			}
 			catch (SQLException sqle)
 			{
-				lblMensajeAltaCliente.setText("Error en ALTA");
 			}
 			finally
 			{
@@ -319,10 +238,7 @@ public class MiSoftware implements WindowListener, ActionListener
 							+"-"+rs.getString("cifCliente"));
 				}
 			}
-			catch (SQLException sqle)
-			{
-				lblMensajeAltaCliente.setText("Error en ALTA");
-			}
+			catch (SQLException sqle){}
 			frmBajaCliente.add(choClientes);
 			btnBorrarCliente.addActionListener(this);
 			frmBajaCliente.add(btnBorrarCliente);
